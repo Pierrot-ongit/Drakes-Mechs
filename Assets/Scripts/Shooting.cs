@@ -9,7 +9,6 @@ public class Shooting : MonoBehaviour
     public Transform weaponTransform;
     public Transform aimTransform;
     public float fireRate;
-
     private float nextFire;
 
     // Start is called before the first frame update

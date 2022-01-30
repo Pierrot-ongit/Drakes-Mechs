@@ -1,15 +1,3 @@
-/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,16 +6,30 @@ using UnityEngine;
 public class PlayerAimWeapon : MonoBehaviour
 {
 
+    public event EventHandler<OnShootEventArgs> OnShoot;
+    public class OnShootEventArgs : EventArgs
+    {
+        public Vector3 weaponEndPointPosition;
+        public Vector3 shootPosition;
+       // public Vector3 shellPosition;
+    }
+
+
     private Transform aimTransform;
     private Transform aimGunEndPointTransform;
-    private Transform aimShellPositionTransform;
-    private Animator aimAnimator;
+   // private Transform aimShellPositionTransform;
+   // private Animator aimAnimator;
     private bool isFacingRight = true;
+
+    public float fireRate;
+    private float nextFire;
 
     private void Awake()
     {
         aimTransform = transform.Find("Aim");
-        aimGunEndPointTransform = aimTransform.Find("WeaponEndPointPosition");
+        aimGunEndPointTransform = aimTransform.Find("Weapon").Find("WeaponEndPointPosition");
+
+   
       //  aimAnimator = aimTransform.GetComponent<Animator>();
      //   aimShellPositionTransform = aimTransform.Find("ShellPosition");
     }
@@ -35,7 +37,7 @@ public class PlayerAimWeapon : MonoBehaviour
     private void Update()
     {
         HandleAiming();
-       // HandleShooting();
+        HandleShooting();
     }
 
     private void HandleAiming()
@@ -67,6 +69,24 @@ public class PlayerAimWeapon : MonoBehaviour
 
     }
 
+
+    private void HandleShooting()
+    {
+        if (Input.GetButton("Fire1") && Time.time > nextFire)
+        {
+            nextFire = Time.time + fireRate;
+            Vector3 mousePosition = GetMouseWorldPosition();
+
+            //aimAnimator.SetTrigger("Shoot");
+
+            OnShoot?.Invoke(this, new OnShootEventArgs
+            {
+                weaponEndPointPosition = aimGunEndPointTransform.position,
+                shootPosition = mousePosition,
+              //  shellPosition = aimShellPositionTransform.position,
+            });
+        }
+    }
 
     private void Flip()
     {

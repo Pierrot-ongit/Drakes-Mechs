@@ -4,21 +4,35 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
 
-	public float speed = 20f;
-	public int damage = 40;
-	public Rigidbody2D rb;
-	public GameObject impactEffect;
+	[SerializeField] float speed = 20f;
+	[SerializeField] int damage = 40;
+	[SerializeField] float lifespan = 5f;
+	[SerializeField] GameObject impactEffect;
+
+	private Rigidbody2D rb;
+	private Vector3 shootDir;
+
+	public void Setup(Vector3 shootDir)
+    {
+		this.shootDir = shootDir;
+		transform.eulerAngles = new Vector3(0, 0 , GetAngleFromVectorFloat(shootDir));
+    }
 
 	// Use this for initialization
 	void Start () {
-		if (rb == null) {
-			rb = GetComponent<Rigidbody2D>();
-		}
-		//rb.velocity = transform.right * speed;
-		Destroy(gameObject, 5);
+		rb = GetComponent<Rigidbody2D>();
+	
+		Destroy(gameObject, lifespan);
 	}
 
-	void OnTriggerEnter2D (Collider2D hitInfo)
+    private void Update()
+    {
+        transform.position += shootDir * speed * Time.deltaTime;
+    }
+
+
+
+    void OnTriggerEnter2D (Collider2D hitInfo)
 	{
 		Debug.Log("Projectile Collision with " + hitInfo.gameObject);
 
@@ -32,5 +46,14 @@ public class Bullet : MonoBehaviour {
 		//Instantiate(impactEffect, transform.position, transform.rotation);
 
 	}
-	
+
+	private float GetAngleFromVectorFloat(Vector3 dir)
+	{
+		dir = dir.normalized;
+		float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		if (n < 0) n += 360;
+
+		return n;
+	}
+
 }
