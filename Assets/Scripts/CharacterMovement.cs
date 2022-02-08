@@ -11,18 +11,11 @@ public class CharacterMovement : MonoBehaviour
     private Vector3 moveDir;
     private bool isJumpButtonDown = false;
     private bool isOnGround = true;
-    private State state;
 
-    private enum State
-    {
-        Normal,
-        Air,
-    }
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        state = State.Normal;
     }
 
     // Start is called before the first frame update
