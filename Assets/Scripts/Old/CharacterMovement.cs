@@ -5,9 +5,11 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     public float speed = 60f;
+    public float airSpeed = 10f;
     public float jumpForce = 60f;
 
     private Rigidbody2D rb;
+    private BoxCollider2D boxCollider2D;
     private Vector3 moveDir;
     private bool isJumpButtonDown = false;
     private bool isOnGround = true;
@@ -16,6 +18,7 @@ public class CharacterMovement : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        boxCollider2D = GetComponent<BoxCollider2D>();
     }
 
     // Start is called before the first frame update
@@ -41,22 +44,30 @@ public class CharacterMovement : MonoBehaviour
 
         moveDir = new Vector3(moveX, moveY).normalized;
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            isJumpButtonDown = true;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            float jumpVelocity = 100f;
+            rb.velocity = Vector2.up* jumpVelocity;
+            //rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            //    isJumpButtonDown = false;
+            isOnGround = false;
         }
     }
 
     private void FixedUpdate()
     {
+
+         rb.velocity = moveDir * speed;
         if (isOnGround)
         {
-            rb.velocity = moveDir * speed;
-            if (isJumpButtonDown) {
-                rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-                isJumpButtonDown = false;
-                isOnGround = false;
-            }
+
         }
+        else { 
+           // rb.velocity = moveDir * airSpeed;
+        }
+       
+
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

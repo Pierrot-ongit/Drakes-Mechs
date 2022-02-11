@@ -9,13 +9,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4251646842501128}
-  - component: {fileID: 114444490285710056}
   - component: {fileID: 212096789007532108}
   - component: {fileID: 50231956401082150}
   - component: {fileID: 58637012837825420}
+  - component: {fileID: 8193325411653110666}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Player
+  m_TagString: ProjectilePlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -28,28 +28,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1539632861300792}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.1344, y: 1.8005, z: 0.14160156}
+  m_LocalPosition: {x: 0.1344, y: 1.8005, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &114444490285710056
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1539632861300792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a4dba9a95fe7cd840b78c881a376ced9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 8
-  damage: 40
-  impactEffect: {fileID: 1473625048454486, guid: 284f05ab582ef494a9ab1dd8bc1e76ae,
-    type: 3}
 --- !u!212 &212096789007532108
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -132,9 +116,25 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.09631066, y: -0.01006268}
   serializedVersion: 2
   m_Radius: 0.19381557
+--- !u!114 &8193325411653110666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1539632861300792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4dba9a95fe7cd840b78c881a376ced9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 20
+  damage: 5
+  lifespan: 5
+  impactEffect: {fileID: 0}

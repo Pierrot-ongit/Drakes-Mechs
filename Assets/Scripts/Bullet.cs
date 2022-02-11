@@ -21,7 +21,6 @@ public class Bullet : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rb = GetComponent<Rigidbody2D>();
-	
 		Destroy(gameObject, lifespan);
 	}
 
@@ -31,7 +30,7 @@ public class Bullet : MonoBehaviour {
     }
 
 
-
+	/*
     void OnTriggerEnter2D (Collider2D hitInfo)
 	{
 		Debug.Log("Projectile Collision with " + hitInfo.gameObject);
@@ -46,8 +45,19 @@ public class Bullet : MonoBehaviour {
 		//Instantiate(impactEffect, transform.position, transform.rotation);
 
 	}
+	*/
 
-	private float GetAngleFromVectorFloat(Vector3 dir)
+     void OnCollisionEnter2D(Collision2D collision)
+    {
+		Debug.Log("Projectile Collision with " + collision.gameObject);
+		if (collision.gameObject.CompareTag("Enemy"))
+        {
+			collision.gameObject.GetComponent<HealthManager>().TakeDamage(damage);
+        }
+		Destroy(gameObject);
+	}
+
+    private float GetAngleFromVectorFloat(Vector3 dir)
 	{
 		dir = dir.normalized;
 		float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
