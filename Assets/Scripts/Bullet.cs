@@ -49,7 +49,7 @@ public class Bullet : MonoBehaviour {
 
      void OnCollisionEnter2D(Collision2D collision)
     {
-		Debug.Log("Projectile Collision with " + collision.gameObject);
+		//Debug.Log("Projectile Collision with " + collision.gameObject);
 		if (collision.gameObject.CompareTag("Enemy"))
         {
 			collision.gameObject.GetComponent<HealthManager>().TakeDamage(damage);

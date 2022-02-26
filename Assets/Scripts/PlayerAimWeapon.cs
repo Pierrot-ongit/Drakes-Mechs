@@ -28,8 +28,6 @@ public class PlayerAimWeapon : MonoBehaviour
 
     private void Awake()
     {
-        //  aimTransform = transform.Find("IK_Manager").Find("Aim");
-       // aimTransform = aimGunEndPointTransform = transform.Find("IK_Manager").Find("Aim").Find("WeaponEndPointPosition");
         aimTransform = GameObject.Find("Aim Transform").transform;
         aimGunEndPointTransform = GameObject.Find("WeaponEndPointPosition").transform;
 
@@ -81,13 +79,23 @@ public class PlayerAimWeapon : MonoBehaviour
         {
             nextFire = Time.time + fireRate;
             Vector3 mousePosition = GetMouseWorldPosition();
+            Vector3 shootDirection = mousePosition;
+
+            float distance = Vector3.Distance(aimTransform.position, aimGunEndPointTransform.position);
+            float distance2 = Vector3.Distance(aimTransform.position, mousePosition);
+            if (distance2 < distance)
+            {
+                // Mouse is inside character radius. Bullets will go toward character if no change.
+                shootDirection = aimGunEndPointTransform.position + (aimGunEndPointTransform.position - aimTransform.position).normalized;
+            }
+
 
             //aimAnimator.SetTrigger("Shoot");
 
             OnShoot?.Invoke(this, new OnShootEventArgs
             {
                 weaponEndPointPosition = aimGunEndPointTransform.position,
-                shootPosition = mousePosition,
+                shootPosition = shootDirection,
               //  shellPosition = aimShellPositionTransform.position,
             });
         }
