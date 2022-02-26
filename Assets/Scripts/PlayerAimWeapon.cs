@@ -26,12 +26,13 @@ public class PlayerAimWeapon : MonoBehaviour
 
     private void Awake()
     {
-        aimTransform = transform.Find("Aim");
-        aimGunEndPointTransform = aimTransform.Find("Weapon").Find("WeaponEndPointPosition");
+        //  aimTransform = transform.Find("IK_Manager").Find("Aim");
+        aimTransform = aimGunEndPointTransform = transform.Find("IK_Manager").Find("Aim").Find("WeaponEndPointPosition");
+        aimTransform = GameObject.Find("Aim Effector").transform;
 
-   
+
       //  aimAnimator = aimTransform.GetComponent<Animator>();
-     //   aimShellPositionTransform = aimTransform.Find("ShellPosition");
+      //   aimShellPositionTransform = aimTransform.Find("ShellPosition");
     }
 
     private void Update()
