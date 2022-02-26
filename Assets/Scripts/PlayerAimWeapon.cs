@@ -20,6 +20,8 @@ public class PlayerAimWeapon : MonoBehaviour
    // private Transform aimShellPositionTransform;
    // private Animator aimAnimator;
     private bool isFacingRight = true;
+    [SerializeField] private float maxUpAngle = 60f;
+    [SerializeField] private float maxDownAngle = -60f;
 
     public float fireRate;
     private float nextFire;
@@ -27,12 +29,13 @@ public class PlayerAimWeapon : MonoBehaviour
     private void Awake()
     {
         //  aimTransform = transform.Find("IK_Manager").Find("Aim");
-        aimTransform = aimGunEndPointTransform = transform.Find("IK_Manager").Find("Aim").Find("WeaponEndPointPosition");
-        aimTransform = GameObject.Find("Aim Effector").transform;
+       // aimTransform = aimGunEndPointTransform = transform.Find("IK_Manager").Find("Aim").Find("WeaponEndPointPosition");
+        aimTransform = GameObject.Find("Aim Transform").transform;
+        aimGunEndPointTransform = GameObject.Find("WeaponEndPointPosition").transform;
 
 
-      //  aimAnimator = aimTransform.GetComponent<Animator>();
-      //   aimShellPositionTransform = aimTransform.Find("ShellPosition");
+        //  aimAnimator = aimTransform.GetComponent<Animator>();
+        //   aimShellPositionTransform = aimTransform.Find("ShellPosition");
     }
 
     private void Update()
@@ -47,10 +50,11 @@ public class PlayerAimWeapon : MonoBehaviour
 
         Vector3 aimDirection = (mousePosition - aimTransform.position).normalized;
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
-        aimTransform.eulerAngles = new Vector3(0, 0, angle);
+        float aimAngle = getAimAngle(angle);
+        aimTransform.eulerAngles = new Vector3(0, 0, aimAngle);
 
         Vector3 aimLocalScale = Vector3.one;
-        if (angle > 90 || angle < -90)
+        if (angle > 100 || angle < -100)
         {
             aimLocalScale.y = -1f;
             if (isFacingRight)
@@ -95,6 +99,37 @@ public class PlayerAimWeapon : MonoBehaviour
         isFacingRight = !isFacingRight;
 
         transform.Rotate(0f, 180f, 0f);
+        aimTransform.Rotate(0f, 180f, 0f);
+    }
+
+    private float getAimAngle(float angle)
+    {
+        float aimAngle = angle;
+        if (isFacingRight) {
+            if (aimAngle > maxUpAngle)
+            {
+                aimAngle = maxUpAngle;
+            }
+            if (aimAngle < maxDownAngle)
+            {
+                aimAngle = maxDownAngle;
+            }
+        }
+        /*
+        else
+        {
+            if (aimAngle > maxUpAngle)
+            {
+                aimAngle = maxUpAngle;
+            }
+            if (aimAngle < maxDownAngle)
+            {
+                aimAngle = maxDownAngle;
+            }
+        }
+        */
+
+        return aimAngle;
     }
 
 

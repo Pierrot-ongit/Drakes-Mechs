@@ -12,8 +12,8 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider2D;
     [SerializeField] private LayerMask groundLayerMask;
 
-    private Vector3 moveDir;
-    private bool isOnGround = true;
+   // private Vector3 moveDir;
+  //  private bool isOnGround = true;
 
     private void Awake()
     {
