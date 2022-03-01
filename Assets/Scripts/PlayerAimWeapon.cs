@@ -18,7 +18,7 @@ public class PlayerAimWeapon : MonoBehaviour
     private Transform aimTransform;
     private Transform aimGunEndPointTransform;
    // private Transform aimShellPositionTransform;
-   // private Animator aimAnimator;
+    private Animator playerAnimator;
     private bool isFacingRight = true;
     [SerializeField] private float maxUpAngle = 60f;
     [SerializeField] private float maxDownAngle = -60f;
@@ -32,7 +32,7 @@ public class PlayerAimWeapon : MonoBehaviour
         aimGunEndPointTransform = GameObject.Find("WeaponEndPointPosition").transform;
 
 
-        //  aimAnimator = aimTransform.GetComponent<Animator>();
+        playerAnimator = GetComponent<Animator>();
         //   aimShellPositionTransform = aimTransform.Find("ShellPosition");
     }
 
@@ -90,7 +90,7 @@ public class PlayerAimWeapon : MonoBehaviour
             }
 
 
-            //aimAnimator.SetTrigger("Shoot");
+            playerAnimator.SetTrigger("Shoot");
 
             OnShoot?.Invoke(this, new OnShootEventArgs
             {

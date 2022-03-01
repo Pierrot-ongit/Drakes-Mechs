@@ -11,14 +11,16 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider2D;
     [SerializeField] private LayerMask groundLayerMask;
+    private Animator playerAnimator;
 
-   // private Vector3 moveDir;
-  //  private bool isOnGround = true;
+    // private Vector3 moveDir;
+    //  private bool isOnGround = true;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
+        playerAnimator = GetComponent<Animator>();
     }
 
     void Start()
@@ -53,6 +55,7 @@ public class PlayerMovement : MonoBehaviour
             if (IsGrounded())
             {
                 rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+                playerAnimator.SetFloat("MoveSpeed", moveSpeed);
             } else
             {
                 rb.velocity += new Vector2(-moveSpeed * midAirControl * Time.deltaTime, 0);
@@ -67,6 +70,7 @@ public class PlayerMovement : MonoBehaviour
                 if (IsGrounded())
                 {
                     rb.velocity = new Vector2(+moveSpeed, rb.velocity.y);
+                    playerAnimator.SetFloat("MoveSpeed", moveSpeed);
                 }
                 else
                 {
@@ -80,6 +84,7 @@ public class PlayerMovement : MonoBehaviour
                 if (IsGrounded())
                 {
                     rb.velocity = new Vector2(0, rb.velocity.y);
+                    playerAnimator.SetFloat("MoveSpeed", 0);
                 }
             }
         }
