@@ -17,8 +17,10 @@ public class EnemyAI : MonoBehaviour
 
     Seeker seeker;
     Rigidbody2D rb;
-    
-    // Start is called before the first frame update
+
+    [SerializeField] private Transform pfProjectile;
+    [SerializeField] private Transform shootTransform;
+
     void Start()
     {
         seeker = GetComponent<Seeker>();
@@ -57,13 +59,16 @@ public class EnemyAI : MonoBehaviour
         if (currentWaypoint >= path.vectorPath.Count)
         {
             reachEndOfPath = true;
+            // TODO Attack.
+            Shoot(target.position);
             return;
         } else
         {
             reachEndOfPath = false;
         }
 
-        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
+        // Arrow from current player position to nextWaypoint with a lenght of one.
+        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; 
         Vector2 force = direction * speed * Time.deltaTime;
 
         rb.AddForce(force);
@@ -76,14 +81,24 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Enemy moving to the right
-        if (rb.velocity.x >= 0.01f)
+        if (force.x >= 0.01f)
         {
             enemyGFX.localScale = new Vector3(-1f, 1f, 1f);
         }
         // Enemy moving to the left
-        else if (rb.velocity.x <= -0.01f)
+        else if (force.x <= -0.01f)
         {
             enemyGFX.localScale = new Vector3(1f, 1f, 1f);
         }
+
+
+    }
+
+    void Shoot(Vector3 targetPosition)
+    {
+        Debug.Log("Test");
+        Transform bulletTransform = Instantiate(pfProjectile, shootTransform.position, Quaternion.identity);
+        Vector3 shootDir = (targetPosition - shootTransform.position).normalized;
+        bulletTransform.GetComponent<Bullet>().Setup(shootDir);
     }
 }
