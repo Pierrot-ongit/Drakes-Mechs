@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour {
 	[SerializeField] int damage = 40;
 	[SerializeField] float lifespan = 5f;
 	[SerializeField] GameObject impactEffect;
+	[SerializeField] bool damageEnemy = true; // Damage the player or the enemy.
 
 	private Rigidbody2D rb;
 	private Vector3 shootDir;
@@ -49,12 +50,27 @@ public class Bullet : MonoBehaviour {
 
      void OnCollisionEnter2D(Collision2D collision)
     {
-		//Debug.Log("Projectile Collision with " + collision.gameObject);
-		if (collision.gameObject.CompareTag("Enemy"))
+		Debug.Log("Projectile Collision with " + collision.gameObject);
+		if (damageEnemy)
         {
-			collision.gameObject.GetComponent<HealthManager>().TakeDamage(damage);
+			if (collision.gameObject.CompareTag("Enemy"))
+			{
+				collision.gameObject.GetComponent<HealthManager>().TakeDamage(damage);
+			}
+		}
+		else
+        {
+			if (collision.gameObject.CompareTag("Player"))
+			{
+				collision.gameObject.GetComponent<HealthManager>().TakeDamage(damage);
+			}
+		}
+		// Impact againt something else than a projectile. Destroy the projectile.
+		if (!collision.gameObject.CompareTag("ProjectilePlayer") && !collision.gameObject.CompareTag("ProjectileEnemy"))
+        {
+			Destroy(gameObject);
         }
-		Destroy(gameObject);
+
 	}
 
     private float GetAngleFromVectorFloat(Vector3 dir)

@@ -5,40 +5,64 @@ using Pathfinding;
 
 public class EnemyAI : MonoBehaviour
 {
+    private enum State
+    {
+        Roaming,
+        ChaseTarget,
+        ShootingTarget,
+        GoingBackToStart,
+    }
+    private State state;
+
     public Transform target;
-
     public float speed = 200f;
-    public float nextWaypointDistance = 3f;
+    public float nextWaypointDistance = 1f;
     public Transform enemyGFX;
-
-    Path path;
-    int currentWaypoint = 0;
-    bool reachEndOfPath = false;
-
-    Seeker seeker;
-    Rigidbody2D rb;
-
     [SerializeField] private Transform pfProjectile;
     [SerializeField] private Transform shootTransform;
+    [SerializeField] private float attackRange = 10f;
+    [SerializeField] float targetRange = 50f;
+    public float fireRate;
+    private float nextFire;
 
-    void Start()
+    Rigidbody2D rb;
+    Seeker seeker;
+    Path path;
+    int currentWaypoint = 0;
+    private Vector3 startingPosition;
+    private Vector3 roamPosition;
+    private Vector3 pathEndPosition;
+
+    // TODO Timer to change roaming.
+
+    private void Awake()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
+        state = State.Roaming;
+    }
 
+    void Start()
+    {
+        startingPosition = transform.position;
+        roamPosition = GetRoamingPosition();
+        pathEndPosition = roamPosition;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 
 
     void UpdatePath()
     {
+
         if (seeker.IsDone())
         {
-          seeker.StartPath(rb.position, target.position, OnPathComplete);
+
+            seeker.StartPath(rb.position, pathEndPosition, OnPathComplete);
         }
 
     }
 
+    // Invoked when the seeker is finished.
     void OnPathComplete(Path p)
     {
         if (!p.error)
@@ -51,26 +75,76 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (path == null)
+        switch (state)
         {
-            return;
-        }
+            default:
+            case State.Roaming:
+                float reachedPositionDistance = 5f;
+                if (Vector3.Distance(transform.position, roamPosition) < reachedPositionDistance)
+                {
+                    // Reached Roam Position
+                    roamPosition = pathEndPosition = GetRoamingPosition();
+                }
+                FindTarget();
+                break;
+            case State.ChaseTarget:
+                // Chasing player.
+                pathEndPosition = target.position;
+                //aimShootAnims.SetAimTarget(Player.Instance.GetPosition());
+                if (Vector3.Distance(transform.position, target.position) < attackRange)
+                {
+                    path = null;
+                    currentWaypoint = 0;
+                    state = State.ShootingTarget;
+                    /* 
+                    aimShootAnims.ShootTarget(target.position, () =>
+                    {
+                        state = State.ChaseTarget;
+                    });
+                    */
+                }
+                float stopChaseDistance = 80f;
+                if (Vector3.Distance(transform.position, target.position) > stopChaseDistance)
+                {
+                    // Too far, stop chasing
+                    state = State.GoingBackToStart;
+                }
+                break;
 
-        if (currentWaypoint >= path.vectorPath.Count)
+            case State.ShootingTarget:
+                // TODO. handle facing.
+                //HandleFacing
+                // transform.rotation.y
+                HandleFacing(target.position);
+                HandleShooting(target.position);
+                // Continue attacking until out of range.
+                // Or go Back to Roaming  ?
+                // roamPosition = pathEndPosition = GetRoamingPosition();
+                // state = State.Roaming;
+                break;
+
+            case State.GoingBackToStart:
+                reachedPositionDistance = 10f;
+                if (Vector3.Distance(transform.position, startingPosition) < reachedPositionDistance)
+                {
+                    // Reached Start Position
+                    state = State.Roaming;
+                }
+                break;
+        }
+        HandleMovement();
+    }
+
+    private void HandleMovement()
+    {
+        if (path == null || path.vectorPath.Count <= currentWaypoint)
         {
-            reachEndOfPath = true;
-            // TODO Attack.
-            Shoot(target.position);
             return;
-        } else
-        {
-            reachEndOfPath = false;
         }
 
         // Arrow from current player position to nextWaypoint with a lenght of one.
-        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized; 
+        Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
         Vector2 force = direction * speed * Time.deltaTime;
-
         rb.AddForce(force);
 
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
@@ -80,24 +154,59 @@ public class EnemyAI : MonoBehaviour
             currentWaypoint++;
         }
 
-        // Enemy moving to the right
-        if (force.x >= 0.01f)
+        if (state != State.ShootingTarget)
+        {
+            HandleFacing(new Vector3(force.x, force.y, 0f));
+        }
+    }
+
+
+    private void FindTarget()
+    {
+        if (Vector3.Distance(transform.position, target.position) < targetRange)
+        {
+            // Player within target range
+            state = State.ChaseTarget;
+        }
+    }
+
+    private Vector3 GetRoamingPosition()
+    {
+        // TODO TEST IF INSIDE GRID OF PATHFINDING.
+        return startingPosition + GetRandomDir() * Random.Range(3f, 10f);
+    }
+
+    Vector3 GetRandomDir()
+    {
+        return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+    }
+
+
+    void HandleFacing(Vector3 positionToLook)
+    {
+        if (positionToLook.x > transform.position.x)
         {
             enemyGFX.localScale = new Vector3(-1f, 1f, 1f);
         }
-        // Enemy moving to the left
-        else if (force.x <= -0.01f)
+        else
         {
             enemyGFX.localScale = new Vector3(1f, 1f, 1f);
         }
+    }
 
-
+    void HandleShooting(Vector3 targetPosition)
+    {
+        if (Time.time > nextFire)
+        {
+            Shoot(targetPosition);
+            nextFire = Time.time + fireRate;
+        }
     }
 
     void Shoot(Vector3 targetPosition)
     {
-        Debug.Log("Test");
         Transform bulletTransform = Instantiate(pfProjectile, shootTransform.position, Quaternion.identity);
+        // Direction toward the targetPosition.
         Vector3 shootDir = (targetPosition - shootTransform.position).normalized;
         bulletTransform.GetComponent<Bullet>().Setup(shootDir);
     }
