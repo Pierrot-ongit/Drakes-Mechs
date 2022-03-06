@@ -7,9 +7,14 @@ public class HealthManager : MonoBehaviour
 
     public int maxHealth = 100;
     public int currentHealth;
+    private ColoredFlash flashEffect;
 
     public HealthBar healthBar;
 
+    private void Awake()
+    {
+        flashEffect = GetComponent<ColoredFlash>();
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -17,18 +22,15 @@ public class HealthManager : MonoBehaviour
         healthBar.SetMaxHealth();
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            TakeDamage(20);
-        }
-    }
-
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        if (flashEffect != null)
+        {
+            flashEffect.Flash("damage");
+        }
+
         if (currentHealth <= 0)
         {
             Death();
@@ -38,5 +40,6 @@ public class HealthManager : MonoBehaviour
     public void Death()
     {
         Destroy(gameObject);
+        // TODO EFFECT DEATH.
     }
 }
