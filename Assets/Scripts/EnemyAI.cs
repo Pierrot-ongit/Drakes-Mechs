@@ -32,6 +32,7 @@ public class EnemyAI : MonoBehaviour
     private Vector3 startingPosition;
     private Vector3 roamPosition;
     private Vector3 pathEndPosition;
+    private List<GraphNode> nodesRoaming;
 
     // TODO Timer to change roaming.
 
@@ -40,11 +41,15 @@ public class EnemyAI : MonoBehaviour
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
         state = State.Roaming;
+        startingPosition = transform.position;
+        // Box of nodes where the enemy is roaming.
+        var gg = AstarPath.active.data.gridGraph;
+        IntRect rect = new IntRect((int)startingPosition.x, (int)startingPosition.y - 3, (int)startingPosition.x + 10, (int)startingPosition.y + 15);
+        nodesRoaming = gg.GetNodesInRegion(rect);
     }
 
     void Start()
     {
-        startingPosition = transform.position;
         roamPosition = GetRoamingPosition();
         pathEndPosition = roamPosition;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
@@ -172,7 +177,13 @@ public class EnemyAI : MonoBehaviour
 
     private Vector3 GetRoamingPosition()
     {
-        // TODO TEST IF INSIDE GRID OF PATHFINDING.
+        if ((nodesRoaming != null) && (nodesRoaming.Count > 0))
+        {
+            int index = Random.Range(0, nodesRoaming.Count);
+            return (Vector3)nodesRoaming[index].position;
+        }
+
+        // Backup method.
         return startingPosition + GetRandomDir() * Random.Range(3f, 10f);
     }
 
