@@ -221,4 +221,9 @@ public class EnemyAI : MonoBehaviour
         Vector3 shootDir = (targetPosition - shootTransform.position).normalized;
         bulletTransform.GetComponent<Bullet>().Setup(shootDir);
     }
+
+    public void setChasingTarget()
+    {
+        state = State.ChaseTarget;
+    }
 }

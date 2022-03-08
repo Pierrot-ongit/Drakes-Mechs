@@ -10,6 +10,9 @@ public class HealthManager : MonoBehaviour
     private ColoredFlash flashEffect;
 
     public HealthBar healthBar;
+    [SerializeField] private float deathDelay = 5f;
+    [SerializeField] private ShaderGraphUnit shaderGraphScript;
+    [SerializeField] private EnemyAI EnemyAIScript;
 
     private void Awake()
     {
@@ -30,6 +33,11 @@ public class HealthManager : MonoBehaviour
         {
             flashEffect.Flash("damage");
         }
+        if (EnemyAIScript != null)
+        {
+            EnemyAIScript.setChasingTarget();
+        }
+
 
         if (currentHealth <= 0)
         {
@@ -39,7 +47,17 @@ public class HealthManager : MonoBehaviour
 
     public void Death()
     {
+        
+        var deathRoutine = StartCoroutine(DeathRoutine());
+    }
+
+    private IEnumerator DeathRoutine()
+    {
+        if (shaderGraphScript != null)
+        {
+            shaderGraphScript.startDissolving();
+            yield return new WaitForSeconds(deathDelay);
+        }
         Destroy(gameObject);
-        // TODO EFFECT DEATH.
     }
 }
