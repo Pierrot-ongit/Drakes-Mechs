@@ -26,10 +26,13 @@ public class PlayerAimWeapon : MonoBehaviour
     public float fireRate;
     private float nextFire;
 
+    private GameManager gameManager;
+
     private void Awake()
     {
         aimTransform = GameObject.Find("Aim Transform").transform;
         aimGunEndPointTransform = GameObject.Find("WeaponEndPointPosition").transform;
+        gameManager = FindObjectOfType<GameManager>();
 
 
         playerAnimator = GetComponent<Animator>();
@@ -38,6 +41,10 @@ public class PlayerAimWeapon : MonoBehaviour
 
     private void Update()
     {
+        if (!gameManager.isGameActive)
+        {
+            return;
+        }
         HandleAiming();
         HandleShooting();
     }

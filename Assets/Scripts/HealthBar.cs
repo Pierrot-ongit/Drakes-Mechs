@@ -8,7 +8,7 @@ public class HealthBar : MonoBehaviour {
     private float maxScale = 1f;
     private float minScale = 0f;
 
-	private void Awake () {
+	private void Start () {
         bar = transform.Find("Bar");
 	}
 

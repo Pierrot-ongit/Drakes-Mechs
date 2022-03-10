@@ -13,16 +13,19 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private float deathDelay = 5f;
     [SerializeField] private ShaderGraphUnit shaderGraphScript;
     [SerializeField] private EnemyAI EnemyAIScript;
+    private GameManager gameManager;
 
     private void Awake()
     {
         flashEffect = GetComponent<ColoredFlash>();
+        gameManager = FindObjectOfType<GameManager>();
+
     }
     // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth;
-        healthBar.SetMaxHealth();
+       // healthBar.SetMaxHealth();
     }
 
     public void TakeDamage(int damage)
@@ -49,6 +52,15 @@ public class HealthManager : MonoBehaviour
     {
         
         var deathRoutine = StartCoroutine(DeathRoutine());
+       // Invoke("Death", 2f);
+        if (gameObject.name == "Character")
+        {
+            gameManager.GameOver();
+        }
+        else
+        {
+            gameManager.Victory();
+        }
     }
 
     private IEnumerator DeathRoutine()
@@ -57,7 +69,7 @@ public class HealthManager : MonoBehaviour
         {
             shaderGraphScript.startDissolving();
             yield return new WaitForSeconds(deathDelay);
+            Destroy(gameObject);
         }
-        Destroy(gameObject);
     }
 }

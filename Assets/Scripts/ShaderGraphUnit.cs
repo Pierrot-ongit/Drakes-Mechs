@@ -41,29 +41,16 @@ public class ShaderGraphUnit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            isDissolving = true;
-            isRestoring = false;
-            setMaterial(dissolveMaterial);
-        }
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            isDissolving = false;
-            isRestoring = true;
-            setMaterial(dissolveMaterial);
-        }
-        */
 
+        // DissolveControls();
         if (isDissolving)
         {
-            fade = Mathf.Clamp01(fade - Time.deltaTime);
+            fade = Mathf.Clamp01(fade - Time.deltaTime / 2);
             setMaterialFloatValue("_Fade", fade);
         }
         if (isRestoring && !isDissolving)
         {
-            fade = Mathf.Clamp01(fade + Time.deltaTime);
+            fade = Mathf.Clamp01(fade + Time.deltaTime / 2);
             setMaterialFloatValue("_Fade", fade);
         }
     }
@@ -105,6 +92,22 @@ public class ShaderGraphUnit : MonoBehaviour
         isDissolving = true;
         isRestoring = false;
         setMaterial(dissolveMaterial);
+    }
+
+    private void DissolveControls()
+    {
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            isDissolving = true;
+            isRestoring = false;
+            setMaterial(dissolveMaterial);
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            isDissolving = false;
+            isRestoring = true;
+            setMaterial(dissolveMaterial);
+        }
     }
 
 

@@ -33,11 +33,13 @@ public class EnemyAI : MonoBehaviour
     private Vector3 roamPosition;
     private Vector3 pathEndPosition;
     private List<GraphNode> nodesRoaming;
+    private GameManager gameManager;
 
     // TODO Timer to change roaming.
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
         state = State.Roaming;
@@ -80,6 +82,10 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!gameManager.isGameActive)
+        {
+            return;
+        }
         switch (state)
         {
             default:
@@ -118,14 +124,12 @@ public class EnemyAI : MonoBehaviour
 
             case State.ShootingTarget:
                 // TODO. handle facing.
-                //HandleFacing
-                // transform.rotation.y
                 HandleFacing(target.position);
                 HandleShooting(target.position);
                 // Continue attacking until out of range.
                 // Or go Back to Roaming  ?
-                // roamPosition = pathEndPosition = GetRoamingPosition();
-                // state = State.Roaming;
+                 roamPosition = pathEndPosition = GetRoamingPosition();
+                 state = State.Roaming;
                 break;
 
             case State.GoingBackToStart:

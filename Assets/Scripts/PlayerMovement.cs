@@ -12,12 +12,11 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider2D;
     [SerializeField] private LayerMask groundLayerMask;
     private Animator playerAnimator;
-
-    // private Vector3 moveDir;
-    //  private bool isOnGround = true;
+    private GameManager gameManager;
 
     private void Awake()
     {
+        gameManager = FindObjectOfType<GameManager>();
         rb = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
         playerAnimator = GetComponent<Animator>();
@@ -31,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (!gameManager.isGameActive)
+        {
+            return;
+        }
+
         if (IsGrounded() && Input.GetKeyDown(KeyCode.Space))
         {
             float jumpVelocity = 100f;
