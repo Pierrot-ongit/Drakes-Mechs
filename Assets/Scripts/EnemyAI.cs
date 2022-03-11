@@ -165,7 +165,8 @@ public class EnemyAI : MonoBehaviour
 
         if (state != State.ShootingTarget)
         {
-            HandleFacing(new Vector3(force.x, force.y, 0f));
+            var last = path.vectorPath[path.vectorPath.Count - 1];
+            HandleFacing(new Vector3(last.x, last.y, 0f));
         }
     }
 
@@ -199,12 +200,15 @@ public class EnemyAI : MonoBehaviour
 
     void HandleFacing(Vector3 positionToLook)
     {
+     //   Debug.Log(positionToLook.x);
         if (positionToLook.x > transform.position.x)
         {
+            Debug.Log("Must face right");
             enemyGFX.localScale = new Vector3(-1f, 1f, 1f);
         }
         else
         {
+            Debug.Log("Must face left");
             enemyGFX.localScale = new Vector3(1f, 1f, 1f);
         }
     }

@@ -136,7 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
-  damage: 5
+  damage: 20
   lifespan: 5
   impactEffect: {fileID: 0}
   damageEnemy: 0
