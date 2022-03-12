@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_Dragon_VFX_FireAdditive
-  m_Shader: {fileID: -6465566751694194690, guid: 1a0ced605b3e6419ea164537f8ea5e6b,
+  m_Shader: {fileID: -6465566751694194690, guid: 50776154fb29bf24e97b9e185e951e42,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 0

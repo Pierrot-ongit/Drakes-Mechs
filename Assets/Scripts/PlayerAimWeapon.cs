@@ -130,19 +130,6 @@ public class PlayerAimWeapon : MonoBehaviour
                 aimAngle = maxDownAngle;
             }
         }
-        /*
-        else
-        {
-            if (aimAngle > maxUpAngle)
-            {
-                aimAngle = maxUpAngle;
-            }
-            if (aimAngle < maxDownAngle)
-            {
-                aimAngle = maxDownAngle;
-            }
-        }
-        */
 
         return aimAngle;
     }

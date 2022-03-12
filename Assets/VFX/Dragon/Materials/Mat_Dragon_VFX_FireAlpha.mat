@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Mat_Dragon_VFX_FireAlpha
-  m_Shader: {fileID: -6465566751694194690, guid: 959b0ff77d0859141bc2fee7656f978f,
+  m_Shader: {fileID: -6465566751694194690, guid: 1974815ae411aa2489e25e44f6ca0f45,
     type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

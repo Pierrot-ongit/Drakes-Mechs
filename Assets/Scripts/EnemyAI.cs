@@ -9,7 +9,7 @@ public class EnemyAI : MonoBehaviour
     {
         Roaming,
         ChaseTarget,
-        ShootingTarget,
+        Attacking,
         GoingBackToStart,
     }
     private State state;
@@ -18,6 +18,7 @@ public class EnemyAI : MonoBehaviour
     public float speed = 200f;
     public float nextWaypointDistance = 1f;
     public Transform enemyGFX;
+    [SerializeField] private Animator enemyAnimator;
     [SerializeField] private Transform pfProjectile;
     [SerializeField] private Transform shootTransform;
     [SerializeField] private float attackRange = 10f;
@@ -33,6 +34,7 @@ public class EnemyAI : MonoBehaviour
     private Vector3 roamPosition;
     private Vector3 pathEndPosition;
     private List<GraphNode> nodesRoaming;
+    private List<string> attackList;
     private GameManager gameManager;
 
     // TODO Timer to change roaming.
@@ -48,6 +50,10 @@ public class EnemyAI : MonoBehaviour
         var gg = AstarPath.active.data.gridGraph;
         IntRect rect = new IntRect((int)startingPosition.x, (int)startingPosition.y - 3, (int)startingPosition.x + 10, (int)startingPosition.y + 15);
         nodesRoaming = gg.GetNodesInRegion(rect);
+
+        attackList = new List<string>();
+        attackList.Add("Bite");
+        attackList.Add("FireBreath");
     }
 
     void Start()
@@ -106,7 +112,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     path = null;
                     currentWaypoint = 0;
-                    state = State.ShootingTarget;
+                    state = State.Attacking;
                     /* 
                     aimShootAnims.ShootTarget(target.position, () =>
                     {
@@ -122,14 +128,14 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
 
-            case State.ShootingTarget:
-                // TODO. handle facing.
+            case State.Attacking:
+                
                 HandleFacing(target.position);
-                HandleShooting(target.position);
-                // Continue attacking until out of range.
-                // Or go Back to Roaming  ?
-                 roamPosition = pathEndPosition = GetRoamingPosition();
-                 state = State.Roaming;
+               // HandleShooting(target.position);
+                Attack();
+                // TODO. MININUM TIME TO ROAM.
+                roamPosition = pathEndPosition = GetRoamingPosition();
+                state = State.Roaming;
                 break;
 
             case State.GoingBackToStart:
@@ -163,7 +169,7 @@ public class EnemyAI : MonoBehaviour
             currentWaypoint++;
         }
 
-        if (state != State.ShootingTarget)
+        if (state != State.Attacking)
         {
             var last = path.vectorPath[path.vectorPath.Count - 1];
             HandleFacing(new Vector3(last.x, last.y, 0f));
@@ -197,18 +203,21 @@ public class EnemyAI : MonoBehaviour
         return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
     }
 
+    public void setChasingTarget()
+    {
+        state = State.ChaseTarget;
+    }
+
 
     void HandleFacing(Vector3 positionToLook)
     {
      //   Debug.Log(positionToLook.x);
         if (positionToLook.x > transform.position.x)
         {
-            Debug.Log("Must face right");
             enemyGFX.localScale = new Vector3(-1f, 1f, 1f);
         }
         else
         {
-            Debug.Log("Must face left");
             enemyGFX.localScale = new Vector3(1f, 1f, 1f);
         }
     }
@@ -230,8 +239,33 @@ public class EnemyAI : MonoBehaviour
         bulletTransform.GetComponent<Bullet>().Setup(shootDir);
     }
 
-    public void setChasingTarget()
+    void Attack()
     {
-        state = State.ChaseTarget;
+        string attackSelected = attackList[Random.Range(0, attackList.Count)];
+        Invoke(attackSelected, 0f);
+        StartCoroutine(DelayAnimation(enemyAnimator.GetCurrentAnimatorStateInfo(0).length));
+        // TODO Hold on until animation is finish.
     }
+
+    void Bite()
+    {
+        enemyAnimator.SetTrigger("Bite");
+        Debug.Log("BITE");
+        // TODO Damage.
+    }
+
+    void FireBreath()
+    {
+        enemyAnimator.SetTrigger("FireBreath");
+        Debug.Log("FireBreath");
+        // TODO Damage.
+    }
+
+    IEnumerator DelayAnimation(float _delay = 0)
+    {
+        yield return new WaitForSeconds(_delay);
+    }
+
+
+
 }
