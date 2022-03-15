@@ -8,11 +8,14 @@ public class EnemyAttacks : MonoBehaviour
     [SerializeField] private float attackRange;
     [SerializeField] private Transform attackPoint;
     [SerializeField] private LayerMask playerLayers;
+    [SerializeField] private GameObject fireBreathEffect;
+    private GameObject areaDamageActivated;
+    private ParticleSystem particleSystemActivated;
   //  [SerializeField] private Animator enemyAnimator;
 
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -35,37 +38,59 @@ public class EnemyAttacks : MonoBehaviour
         {
             Debug.Log(attackName);
             enemyAnimator.SetTrigger(attackName);
+            float animationLength = enemyAnimator.GetCurrentAnimatorStateInfo(0).length; // TODO A CORRIGER.
+            Debug.Log(enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("FireBreath"));
+            Debug.Log(enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Flying"));
+            Debug.Log(enemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+            Debug.Log(animationLength);
             switch (attackName)
             {
                 case "Bite":
-                    Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
-                    foreach (Collider2D hit in hits)
-                    {
-                        hit.gameObject.GetComponent<HealthManager>().TakeDamage(10);
-                    }
+                    // AttackInAnimation se charge d'appliquer les degats au bon moment de l'animation.
+                    StartCoroutine(DelayAnimation(animationLength));
                     break;
                 case "FireBreath":
-                    // TODO AREA DAMAGE.
+                    if (fireBreathEffect != null)
+                    {
+                        particleSystemActivated = fireBreathEffect.GetComponent<ParticleSystem>();
+                        particleSystemActivated.Play();
+                        areaDamageActivated = fireBreathEffect.transform.Find("AreaDamage").gameObject;
+                        if (areaDamageActivated != null)
+                        {
+                            // Un script AreaDamage dans ce GameObject se charge d'infler les degats.
+                            areaDamageActivated.SetActive(true);
+                        }
+                    }
                     break;
             }
-            
-            StartCoroutine(DelayAnimation(enemyAnimator.GetCurrentAnimatorStateInfo(0).length));
-
         }
     }
-
-    void FireBreath()
-    {
-      //  if (enemyAnimator.GetCurrentAnimatorStateInfo(0).)
-        enemyAnimator.SetTrigger("FireBreath");
-        Debug.Log("FireBreath");
-        StartCoroutine(DelayAnimation(enemyAnimator.GetCurrentAnimatorStateInfo(0).length));
-    }
-
 
     IEnumerator DelayAnimation(float _delay = 0)
     {
         yield return new WaitForSeconds(_delay);
+    }
+
+    private void AttackInAnimation(int damage)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
+        foreach (Collider2D hit in hits)
+        {
+            hit.gameObject.GetComponent<HealthManager>().TakeDamage(damage);
+        }
+    }
+
+    private void StopAttackInAnimation()
+    {
+        if (particleSystemActivated != null)
+        {
+            particleSystemActivated.Stop();
+        }
+        if (areaDamageActivated != null)
+        {
+            areaDamageActivated.SetActive(false);
+        }
+
     }
 
 

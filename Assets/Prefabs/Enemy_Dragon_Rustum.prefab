@@ -16,7 +16,6 @@ GameObject:
   - component: {fileID: 5596989606610398791}
   - component: {fileID: 1933342906445166220}
   - component: {fileID: 4288150553144323028}
-  - component: {fileID: 6150567402267285089}
   m_Layer: 7
   m_Name: Enemy_Dragon_Rustum
   m_TagString: Enemy
@@ -97,7 +96,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
@@ -147,6 +146,7 @@ MonoBehaviour:
   playerLayers:
     serializedVersion: 2
     m_Bits: 0
+  fireBreathEffect: {fileID: 0}
 --- !u!114 &1933342906445166220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -202,25 +202,6 @@ MonoBehaviour:
   dissolveSpeed: 0.5
   flashMaterial: {fileID: 0}
   flashDuration: 0
---- !u!95 &6150567402267285089
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 228202692780332260}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7522b266c148f6d4c80aa51290f302a6, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &8874988038916182618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1170,9 +1151,9 @@ SpriteRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 8980274088564873080}
   m_PrefabAsset: {fileID: 0}
---- !u!212 &9095029637030985036 stripped
+--- !u!212 &5106350343528451386 stripped
 SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 187003770669656628, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
+  m_CorrespondingSourceObject: {fileID: 4214578844330940994, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
     type: 3}
   m_PrefabInstance: {fileID: 8980274088564873080}
   m_PrefabAsset: {fileID: 0}
@@ -1254,21 +1235,21 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 8980274088564873080}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &5856592744973726892 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3307502115039224788, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
+    type: 3}
+  m_PrefabInstance: {fileID: 8980274088564873080}
+  m_PrefabAsset: {fileID: 0}
 --- !u!212 &9040888820128781928 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 132829590461497616, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
     type: 3}
   m_PrefabInstance: {fileID: 8980274088564873080}
   m_PrefabAsset: {fileID: 0}
---- !u!212 &5106350343528451386 stripped
+--- !u!212 &9095029637030985036 stripped
 SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 4214578844330940994, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
-    type: 3}
-  m_PrefabInstance: {fileID: 8980274088564873080}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &5856592744973726892 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3307502115039224788, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
+  m_CorrespondingSourceObject: {fileID: 187003770669656628, guid: 534a3d4f56faeac4e9ffdb3c5b1af4d2,
     type: 3}
   m_PrefabInstance: {fileID: 8980274088564873080}
   m_PrefabAsset: {fileID: 0}
