@@ -6,7 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 60f;
     [SerializeField] private float midAirControl = 2f;
-    [SerializeField] private float jumpForce = 60f;
+
 
     private Rigidbody2D rb;
     private BoxCollider2D boxCollider2D;
@@ -14,12 +14,27 @@ public class PlayerMovement : MonoBehaviour
     private Animator playerAnimator;
     private GameManager gameManager;
 
+    [Header("Jump")]
+    [SerializeField] private float jumpForce = 5f;
+    [SerializeField] private float maxJumpTime = 0.5f;
+    [SerializeField] private float jumpMultiplier = 3f;
+    [SerializeField] private float fallMultiplier = 3f;
+    private Vector2 vGravityY;
+    private Vector2 fallForce;
+    private Vector2 riseForce;
+    private bool onGround;
+    private float jumpTimeCounter = 0f;
+    private bool isJumping;
+
     private void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
         rb = GetComponent<Rigidbody2D>();
         boxCollider2D = GetComponent<BoxCollider2D>();
         playerAnimator = GetComponent<Animator>();
+        vGravityY = Vector2.up * Physics2D.gravity.y;
+        riseForce = -vGravityY * (jumpMultiplier - 1);
+        fallForce = vGravityY * (fallMultiplier - 1);
     }
 
     void Start()
@@ -36,12 +51,9 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        if (IsGrounded() && Input.GetKeyDown(KeyCode.Space))
-        {
-            float jumpVelocity = 100f;
-            rb.velocity = Vector2.up * jumpForce;
-        }
-
+        onGround = IsGrounded();
+       
+        HandleJump();
         HandleMovement();
     }
 
@@ -57,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
         // Move left
         if (Input.GetKey(KeyCode.Q))
         {
-            if (IsGrounded())
+            if (onGround)
             {
                 rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
                 playerAnimator.SetFloat("MoveSpeed", moveSpeed);
@@ -72,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
             // Move Right
             if (Input.GetKey(KeyCode.D))
             {
-                if (IsGrounded())
+                if (onGround)
                 {
                     rb.velocity = new Vector2(+moveSpeed, rb.velocity.y);
                     playerAnimator.SetFloat("MoveSpeed", moveSpeed);
@@ -86,12 +98,53 @@ public class PlayerMovement : MonoBehaviour
             else
             {
                 // No Keys pressed
-                if (IsGrounded())
+                if (onGround)
                 {
                     rb.velocity = new Vector2(0, rb.velocity.y);
                     playerAnimator.SetFloat("MoveSpeed", 0);
                 }
             }
+        }
+    }
+
+    private void HandleJump()
+    {
+
+        if (onGround == true && Input.GetKeyDown(KeyCode.Space))
+        {
+            isJumping = true;
+            jumpTimeCounter = maxJumpTime;
+            rb.velocity = Vector2.up * jumpForce;
+            playerAnimator.SetTrigger("Jump");
+        }
+        // Button still behind hold down.
+        if (Input.GetKey(KeyCode.Space) && isJumping == true)
+        {
+            if (jumpTimeCounter > 0)
+            {
+                jumpTimeCounter -= Time.deltaTime;
+            }
+            else
+            {
+                isJumping = false;
+            }
+        }
+        // Button release.
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            //Debug.Log(" Button release.");
+            isJumping = false;
+        }
+        // Better handling of gravity.
+        if (rb.velocity.y < 0)
+        {
+            //player jump falling
+          rb.velocity += fallForce * Time.deltaTime;
+        }
+        else if (rb.velocity.y > 0 && isJumping == true)
+        {
+            // player jump rising
+            rb.velocity += riseForce * Time.deltaTime;
         }
     }
 }

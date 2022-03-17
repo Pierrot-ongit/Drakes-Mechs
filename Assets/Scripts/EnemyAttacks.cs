@@ -36,13 +36,8 @@ public class EnemyAttacks : MonoBehaviour
     {
         if (enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Flying"))
         {
-            Debug.Log(attackName);
             enemyAnimator.SetTrigger(attackName);
             float animationLength = enemyAnimator.GetCurrentAnimatorStateInfo(0).length; // TODO A CORRIGER.
-            Debug.Log(enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("FireBreath"));
-            Debug.Log(enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Flying"));
-            Debug.Log(enemyAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime);
-            Debug.Log(animationLength);
             switch (attackName)
             {
                 case "Bite":
