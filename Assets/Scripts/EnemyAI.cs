@@ -17,14 +17,17 @@ public class EnemyAI : MonoBehaviour
     public Transform target;
     public float speed = 200f;
     public float nextWaypointDistance = 1f;
+    public float minRoamingTime = 2f;
     public Transform enemyGFX;
     [SerializeField] private Animator enemyAnimator;
+    [SerializeField] private EnemyAttacks EnemyAttacksScript;
     [SerializeField] private Transform pfProjectile;
     [SerializeField] private Transform shootTransform;
     [SerializeField] private float attackRange = 10f;
     [SerializeField] float targetRange = 50f;
     public float fireRate;
     private float nextFire;
+    private float roamingTimeCounter;
 
     Rigidbody2D rb;
     Seeker seeker;
@@ -34,7 +37,6 @@ public class EnemyAI : MonoBehaviour
     private Vector3 roamPosition;
     private Vector3 pathEndPosition;
     private List<GraphNode> nodesRoaming;
-    private List<string> attackList;
     private GameManager gameManager;
 
     // TODO Timer to change roaming.
@@ -50,14 +52,11 @@ public class EnemyAI : MonoBehaviour
         var gg = AstarPath.active.data.gridGraph;
         IntRect rect = new IntRect((int)startingPosition.x, (int)startingPosition.y - 3, (int)startingPosition.x + 10, (int)startingPosition.y + 15);
         nodesRoaming = gg.GetNodesInRegion(rect);
-
-        attackList = new List<string>();
-        attackList.Add("Bite");
-        attackList.Add("FireBreath");
     }
 
     void Start()
     {
+        roamingTimeCounter = minRoamingTime;
         roamPosition = GetRoamingPosition();
         pathEndPosition = roamPosition;
         InvokeRepeating("UpdatePath", 0f, 0.5f);
@@ -96,6 +95,7 @@ public class EnemyAI : MonoBehaviour
         {
             default:
             case State.Roaming:
+                roamingTimeCounter -= Time.deltaTime;
                 float reachedPositionDistance = 5f;
                 if (Vector3.Distance(transform.position, roamPosition) < reachedPositionDistance)
                 {
@@ -107,18 +107,11 @@ public class EnemyAI : MonoBehaviour
             case State.ChaseTarget:
                 // Chasing player.
                 pathEndPosition = target.position;
-                //aimShootAnims.SetAimTarget(Player.Instance.GetPosition());
                 if (Vector3.Distance(transform.position, target.position) < attackRange)
                 {
                     path = null;
                     currentWaypoint = 0;
                     state = State.Attacking;
-                    /* 
-                    aimShootAnims.ShootTarget(target.position, () =>
-                    {
-                        state = State.ChaseTarget;
-                    });
-                    */
                 }
                 float stopChaseDistance = 80f;
                 if (Vector3.Distance(transform.position, target.position) > stopChaseDistance)
@@ -129,13 +122,11 @@ public class EnemyAI : MonoBehaviour
                 break;
 
             case State.Attacking:
-                
                 HandleFacing(target.position);
-               // HandleShooting(target.position);
-                Attack();
-                // TODO. MININUM TIME TO ROAM.
+                EnemyAttacksScript.RandomAttack();
                 roamPosition = pathEndPosition = GetRoamingPosition();
                 state = State.Roaming;
+                roamingTimeCounter = minRoamingTime;
                 break;
 
             case State.GoingBackToStart:
@@ -152,6 +143,10 @@ public class EnemyAI : MonoBehaviour
 
     private void HandleMovement()
     {
+        if (EnemyAttacksScript.isAttacking)
+        {
+            return;
+        }
         if (path == null || path.vectorPath.Count <= currentWaypoint)
         {
             return;
@@ -179,7 +174,7 @@ public class EnemyAI : MonoBehaviour
 
     private void FindTarget()
     {
-        if (Vector3.Distance(transform.position, target.position) < targetRange)
+        if (Vector3.Distance(transform.position, target.position) < targetRange && (roamingTimeCounter < 0))
         {
             // Player within target range
             state = State.ChaseTarget;
@@ -238,34 +233,5 @@ public class EnemyAI : MonoBehaviour
         Vector3 shootDir = (targetPosition - shootTransform.position).normalized;
         bulletTransform.GetComponent<Bullet>().Setup(shootDir);
     }
-
-    void Attack()
-    {
-        string attackSelected = attackList[Random.Range(0, attackList.Count)];
-        Invoke(attackSelected, 0f);
-        StartCoroutine(DelayAnimation(enemyAnimator.GetCurrentAnimatorStateInfo(0).length));
-        // TODO Hold on until animation is finish.
-    }
-
-    void Bite()
-    {
-        enemyAnimator.SetTrigger("Bite");
-        Debug.Log("BITE");
-        // TODO Damage.
-    }
-
-    void FireBreath()
-    {
-        enemyAnimator.SetTrigger("FireBreath");
-        Debug.Log("FireBreath");
-        // TODO Damage.
-    }
-
-    IEnumerator DelayAnimation(float _delay = 0)
-    {
-        yield return new WaitForSeconds(_delay);
-    }
-
-
 
 }

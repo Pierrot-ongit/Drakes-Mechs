@@ -11,11 +11,16 @@ public class EnemyAttacks : MonoBehaviour
     [SerializeField] private GameObject fireBreathEffect;
     private GameObject areaDamageActivated;
     private ParticleSystem particleSystemActivated;
-  //  [SerializeField] private Animator enemyAnimator;
+    private List<string> attackList;
+    public bool isAttacking;
 
     void Start()
     {
+        attackList = new List<string>();
+        attackList.Add("Bite");
+        attackList.Add("FireBreath");
 
+        isAttacking = false;
     }
 
     // Update is called once per frame
@@ -31,12 +36,19 @@ public class EnemyAttacks : MonoBehaviour
         }
     }
 
+    public void RandomAttack()
+    {
+        string attackSelected = attackList[Random.Range(0, attackList.Count)];
+        Attack(attackSelected);
+    }
+
 
     void Attack(string attackName)
     {
         if (enemyAnimator.GetCurrentAnimatorStateInfo(0).IsName("Flying"))
         {
             enemyAnimator.SetTrigger(attackName);
+            isAttacking = true;
             float animationLength = enemyAnimator.GetCurrentAnimatorStateInfo(0).length; // TODO A CORRIGER.
             switch (attackName)
             {
@@ -86,6 +98,7 @@ public class EnemyAttacks : MonoBehaviour
             areaDamageActivated.SetActive(false);
         }
 
+        isAttacking = false;
     }
 
 
