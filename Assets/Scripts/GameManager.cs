@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverScreen;
     public GameObject gameplayUI;
     public GameObject victoryScreen;
+    public AudioSource gameMusic;
     public bool isGameActive;
 
     public void StartGame()
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour
         isGameActive = true;
         titleScreen.gameObject.SetActive(false);
         gameplayUI.gameObject.SetActive(true);
+        if (gameMusic != null)
+        {
+            gameMusic.Play();
+        }
     }
 
     public void GameOver()
