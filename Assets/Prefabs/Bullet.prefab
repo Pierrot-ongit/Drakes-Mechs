@@ -136,9 +136,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 8
-  damage: 5
+  damage: 3
   lifespan: 5
   impactEffect: {fileID: 0}
+  damageEnemy: 1
 --- !u!95 &2316861192500764031
 Animator:
   serializedVersion: 3

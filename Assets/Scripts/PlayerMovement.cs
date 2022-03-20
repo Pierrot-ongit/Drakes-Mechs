@@ -52,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         onGround = IsGrounded();
+        Debug.Log(onGround);
        
         HandleJump();
         HandleMovement();
@@ -60,8 +61,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        RaycastHit2D raycastHit2d =  Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, 0.1f, groundLayerMask);
-        return raycastHit2d != null;
+        return  Physics2D.BoxCast(boxCollider2D.bounds.center, boxCollider2D.bounds.size, 0f, Vector2.down, 0.5f, groundLayerMask);
     }
 
     private void HandleMovement()
@@ -115,7 +115,7 @@ public class PlayerMovement : MonoBehaviour
             isJumping = true;
             jumpTimeCounter = maxJumpTime;
             rb.velocity = Vector2.up * jumpForce;
-            playerAnimator.SetTrigger("Jump");
+            playerAnimator.SetTrigger("Jumping");
         }
         // Button still behind hold down.
         if (Input.GetKey(KeyCode.Space) && isJumping == true)
@@ -147,4 +147,5 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity += riseForce * Time.deltaTime;
         }
     }
+
 }

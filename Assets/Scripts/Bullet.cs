@@ -31,26 +31,8 @@ public class Bullet : MonoBehaviour {
     }
 
 
-	/*
-    void OnTriggerEnter2D (Collider2D hitInfo)
-	{
-		Debug.Log("Projectile Collision with " + hitInfo.gameObject);
-
-		Enemy enemy = hitInfo.GetComponent<Enemy>();
-		if (enemy != null)
-		{
-			enemy.TakeDamage(damage);
-		}
-		Destroy(gameObject);
-
-		//Instantiate(impactEffect, transform.position, transform.rotation);
-
-	}
-	*/
-
      void OnCollisionEnter2D(Collision2D collision)
     {
-		//Debug.Log("Projectile Collision with " + collision.gameObject);
 		if (damageEnemy)
         {
 			if (collision.gameObject.CompareTag("Enemy"))
