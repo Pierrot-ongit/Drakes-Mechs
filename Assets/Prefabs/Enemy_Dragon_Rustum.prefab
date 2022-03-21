@@ -118,16 +118,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  speed: 200
+  speed: 20000
   nextWaypointDistance: 1
+  minRoamingTime: 2
   enemyGFX: {fileID: 228202692780332257}
   enemyAnimator: {fileID: 6225181165021148662}
   EnemyAttacksScript: {fileID: 1961403262}
+  healthManager: {fileID: 471228917114393370}
   pfProjectile: {fileID: 4251646842501128, guid: 668c17f4ee3a9a74b9cb90bcb7c90f3d,
     type: 3}
   shootTransform: {fileID: 257447218370947146}
-  attackRange: 2
-  targetRange: 4
+  attackRange: 5
+  targetRange: 5
   fireRate: 3
 --- !u!114 &1933342906445166220
 MonoBehaviour:
@@ -1588,3 +1590,4 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   fireBreathEffect: {fileID: 8277730750777631363}
+  isAttacking: 0

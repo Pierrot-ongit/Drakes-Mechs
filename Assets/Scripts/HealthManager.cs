@@ -14,11 +14,13 @@ public class HealthManager : MonoBehaviour
     [SerializeField] private ShaderGraphUnit shaderGraphScript;
     [SerializeField] private EnemyAI EnemyAIScript;
     private GameManager gameManager;
+    private bool isDead;
 
     private void Awake()
     {
         flashEffect = GetComponent<ColoredFlash>();
         gameManager = FindObjectOfType<GameManager>();
+        isDead = false;
 
     }
 
@@ -30,8 +32,22 @@ public class HealthManager : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+
+        if (isDead)
+        {
+            return;
+        }
+
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        if (currentHealth <= 0)
+        {
+            isDead = true;
+            Death();
+            return;
+        }
+
+
         if (flashEffect != null)
         {
             flashEffect.Flash("damage");
@@ -41,18 +57,26 @@ public class HealthManager : MonoBehaviour
             EnemyAIScript.setChasingTarget();
         }
 
+    }
 
-        if (currentHealth <= 0)
-        {
-            Death();
-        }
+    public bool IsDead()
+    {
+        return isDead;
     }
 
     public void Death()
     {
-        
-        var deathRoutine = StartCoroutine(DeathRoutine());
-       // Invoke("Death", 2f);
+
+        healthBar.gameObject.SetActive(false);
+        if (shaderGraphScript != null)
+        {
+            shaderGraphScript.startDissolving();
+        }
+        Invoke("handleEndGame", deathDelay);
+    }
+
+    private void handleEndGame()
+    {
         if (gameObject.name == "Character")
         {
             gameManager.GameOver();
@@ -61,6 +85,7 @@ public class HealthManager : MonoBehaviour
         {
             gameManager.Victory();
         }
+        Destroy(gameObject);
     }
 
     private IEnumerator DeathRoutine()
@@ -68,8 +93,17 @@ public class HealthManager : MonoBehaviour
         if (shaderGraphScript != null)
         {
             shaderGraphScript.startDissolving();
+            Debug.Log("test");
             yield return new WaitForSeconds(deathDelay);
             Destroy(gameObject);
+            if (gameObject.name == "Character")
+            {
+                gameManager.GameOver();
+            }
+            else
+            {
+                gameManager.Victory();
+            }
         }
     }
 }

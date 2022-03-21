@@ -21,6 +21,7 @@ public class EnemyAI : MonoBehaviour
     public Transform enemyGFX;
     [SerializeField] private Animator enemyAnimator;
     [SerializeField] private EnemyAttacks EnemyAttacksScript;
+    [SerializeField] private HealthManager healthManager;
     [SerializeField] private Transform pfProjectile;
     [SerializeField] private Transform shootTransform;
     [SerializeField] private float attackRange = 10f;
@@ -91,6 +92,11 @@ public class EnemyAI : MonoBehaviour
         {
             return;
         }
+        if (healthManager.IsDead() == true)
+        {
+            return;
+        }
+
         switch (state)
         {
             default:
@@ -206,7 +212,6 @@ public class EnemyAI : MonoBehaviour
 
     void HandleFacing(Vector3 positionToLook)
     {
-     //   Debug.Log(positionToLook.x);
         if (positionToLook.x > transform.position.x)
         {
             enemyGFX.localScale = new Vector3(-1f, 1f, 1f);

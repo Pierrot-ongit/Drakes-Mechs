@@ -52,7 +52,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         onGround = IsGrounded();
-        Debug.Log(onGround);
        
         HandleJump();
         HandleMovement();

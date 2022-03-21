@@ -23,18 +23,6 @@ public class EnemyAttacks : MonoBehaviour
         isAttacking = false;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Attack("FireBreath");
-        }
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            Attack("Bite");
-        }
-    }
 
     public void RandomAttack()
     {

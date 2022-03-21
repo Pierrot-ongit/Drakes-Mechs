@@ -25,7 +25,6 @@ public class ShaderGraphUnit : MonoBehaviour
     // The currently running coroutine.
     private Coroutine flashRoutine;
 
-    // Start is called before the first frame update
     void Start()
     {
         foreach (Transform child in parentGameObject.transform)
@@ -38,11 +37,11 @@ public class ShaderGraphUnit : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
+
     void Update()
     {
 
-        // DissolveControls();
+         DissolveControls();
         if (isDissolving)
         {
             fade = Mathf.Clamp01(fade - Time.deltaTime / 2);
@@ -59,8 +58,7 @@ public class ShaderGraphUnit : MonoBehaviour
     {
         foreach (SpriteRenderer spriteRenderer in spriteRenderers)
         {
-            // Swap to the flashMaterial.
-            spriteRenderer.material = material;
+            spriteRenderer.sharedMaterial = material;
         }
     }
 
@@ -68,12 +66,9 @@ public class ShaderGraphUnit : MonoBehaviour
     {
         foreach (SpriteRenderer spriteRenderer in spriteRenderers)
         {
-            // Swap to the flashMaterial.
-            spriteRenderer.material.SetFloat(propertyName, value);
+            spriteRenderer.sharedMaterial.SetFloat(propertyName, value);
         }
     }
-
-
     public void startDissolving()
     {
         isDissolving = true;
@@ -89,8 +84,8 @@ public class ShaderGraphUnit : MonoBehaviour
 
     public void startRestoring()
     {
-        isDissolving = true;
-        isRestoring = false;
+        isDissolving = false;
+        isRestoring = true;
         setMaterial(dissolveMaterial);
     }
 
@@ -98,15 +93,11 @@ public class ShaderGraphUnit : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.M))
         {
-            isDissolving = true;
-            isRestoring = false;
-            setMaterial(dissolveMaterial);
+            startDissolving();
         }
         if (Input.GetKeyDown(KeyCode.L))
         {
-            isDissolving = false;
-            isRestoring = true;
-            setMaterial(dissolveMaterial);
+            startRestoring();
         }
     }
 
@@ -131,4 +122,5 @@ public class ShaderGraphUnit : MonoBehaviour
         // Set the flashRoutine to null, signaling that it's finished.
         flashRoutine = null;
     }
+
 }
