@@ -2,7 +2,8 @@ using System.Collections;
 using UnityEngine;
 
 
-public class ColoredFlash : MonoBehaviour
+// INHERITANCE
+public class ColoredFlash : MultipleSpriteRendererMaterialHandler
 {
 
     [Tooltip("Material to switch to during the flash.")]
@@ -13,24 +14,21 @@ public class ColoredFlash : MonoBehaviour
     [Tooltip("Duration of the flash.")]
     [SerializeField] private float duration;
 
-    // The SpriteRenderer that should flash.
-    [SerializeField] private SpriteRenderer[] spriteRenderers;
-
 
     // The currently running coroutine.
     private Coroutine flashRoutine;
 
-   // const damageColor = "red";
-
     private Color damageColor = Color.red;
     private Color healColor = Color.green;
 
-
-    void Start()
+    // POLYMORPHISM
+    new void Start()
     {
         // Copy the flashMaterial material, this is needed, 
         // so it can be modified without any side effects.
+
         flashMaterial = new Material(flashMaterial);
+        base.Start();
     }
 
 
@@ -63,21 +61,12 @@ public class ColoredFlash : MonoBehaviour
 
     private IEnumerator FlashRoutine(Color color)
     {
-        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
-        {
-            // Swap to the flashMaterial.
-            spriteRenderer.material = flashMaterial;
-
-            // Set the desired color for the flash.
-            flashMaterial.color = color;
-        }
+        
+        setMaterial(flashMaterial);
+        setMaterialColor(color);
         // Pause the execution of this function for "duration" seconds.
         yield return new WaitForSeconds(duration);
-        foreach (SpriteRenderer spriteRenderer in spriteRenderers)
-        {
-            // After the pause, swap back to the original material.
-            spriteRenderer.material = originalMaterial;
-        }
+        setMaterial(originalMaterial);
         // Set the flashRoutine to null, signaling that it's finished.
         flashRoutine = null;
     }

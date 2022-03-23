@@ -55,7 +55,8 @@ public class Bullet : MonoBehaviour {
 
 	}
 
-    private float GetAngleFromVectorFloat(Vector3 dir)
+	// ABSTRACTION
+	private float GetAngleFromVectorFloat(Vector3 dir)
 	{
 		dir = dir.normalized;
 		float n = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;

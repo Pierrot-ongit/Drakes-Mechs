@@ -177,7 +177,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
+    // ABSTRACTION
     private void FindTarget()
     {
         if (Vector3.Distance(transform.position, target.position) < targetRange && (roamingTimeCounter < 0))
@@ -187,6 +187,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // ABSTRACTION
     private Vector3 GetRoamingPosition()
     {
         if ((nodesRoaming != null) && (nodesRoaming.Count > 0))
@@ -199,11 +200,13 @@ public class EnemyAI : MonoBehaviour
         return startingPosition + GetRandomDir() * Random.Range(3f, 10f);
     }
 
+    // ABSTRACTION
     Vector3 GetRandomDir()
     {
         return new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
     }
 
+    // ENCAPSULATION
     public void setChasingTarget()
     {
         state = State.ChaseTarget;

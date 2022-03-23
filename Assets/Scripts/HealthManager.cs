@@ -59,6 +59,7 @@ public class HealthManager : MonoBehaviour
 
     }
 
+    // ENCAPSULATION
     public bool IsDead()
     {
         return isDead;

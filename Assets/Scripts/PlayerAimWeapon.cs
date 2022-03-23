@@ -108,6 +108,7 @@ public class PlayerAimWeapon : MonoBehaviour
         }
     }
 
+    // ABSTRACTION
     private void Flip()
     {
         // Switch the way the player is labelled as facing.
@@ -134,7 +135,7 @@ public class PlayerAimWeapon : MonoBehaviour
         return aimAngle;
     }
 
-
+    // ABSTRACTION
     public Vector3 GetMouseWorldPosition()
     {
         Vector3 vec = GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
@@ -142,14 +143,19 @@ public class PlayerAimWeapon : MonoBehaviour
         return vec;
     }
 
+    // ABSTRACTION
     public Vector3 GetMouseWorldPositionWithZ()
     {
         return GetMouseWorldPositionWithZ(Input.mousePosition, Camera.main);
     }
+
+    // ABSTRACTION
     public Vector3 GetMouseWorldPositionWithZ(Camera worldCamera)
     {
         return GetMouseWorldPositionWithZ(Input.mousePosition, worldCamera);
     }
+
+    // ABSTRACTION
     public Vector3 GetMouseWorldPositionWithZ(Vector3 screenPosition, Camera worldCamera)
     {
         Vector3 worldPosition = worldCamera.ScreenToWorldPoint(screenPosition);
